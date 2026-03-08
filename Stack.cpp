@@ -47,6 +47,77 @@ public:
             top--;
         }
     }
+    string infixToPostfix(string infix)
+    {
+        stack<char> s;
+        string postfix = "";
+
+        for (char c : infix)
+        {
+            if (isalpha(c))             
+                postfix += c;
+
+            else if (c == '(')          
+                s.push(c);
+
+        else if (c == ')')          
+        {
+            while (!s.empty() && s.top() != '(')
+            {
+                postfix += s.top();
+                s.pop();
+            }
+            s.pop();                
+        }
+
+        else                        
+        {
+            while (!s.empty() && 
+                   (s.top() != '(') &&
+                   ((c=='+'||c=='-') || (c=='*'||c=='/') && (s.top()=='*'||s.top()=='/'))))
+            {
+                postfix += s.top();
+                s.pop();
+            }
+            s.push(c);
+        }
+    }
+
+    while (!s.empty())
+    {
+        postfix += s.top();
+        s.pop();
+    }
+
+    return postfix;
+}
+    / Function to evaluate a numeric postfix expression
+int evaluatePostfix(string exp)
+{
+    stack<int> s;
+
+    for (char c : exp)
+    {
+        if (isdigit(c))
+            s.push(c - '0');       
+
+        else
+        {
+            int b = s.top(); s.pop();
+            int a = s.top(); s.pop();
+
+            switch (c)
+            {
+                case '+': s.push(a + b); break;
+                case '-': s.push(a - b); break;
+                case '*': s.push(a * b); break;
+                case '/': s.push(a / b); break;
+            }
+        }
+    }
+
+    return s.top();
+}
 };
 
 int main()
@@ -59,6 +130,13 @@ int main()
 
     s.pop();
     s.pop();
+    
+    string infixExp = "(A+B)*(C-D)+E";
+    cout << "Postfix: " << infixToPostfix(infixExp) << endl;
 
+    string postfixExp = "523*+9-"; 
+    cout << "Result: " << evaluatePostfix(postfixExp) << endl;
+    
     return 0;
+
 }
