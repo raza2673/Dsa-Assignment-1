@@ -1,4 +1,6 @@
 #include <iostream>
+#include <stack>
+#include <cctype>
 using namespace std;
 
 #define SIZE 5
@@ -47,34 +49,35 @@ public:
             top--;
         }
     }
-    string infixToPostfix(string infix)
+};
+
+// Function to convert Infix to Postfix
+string infixToPostfix(string infix)
+{
+    stack<char> s;
+    string postfix = "";
+
+    for (char c : infix)
     {
-        stack<char> s;
-        string postfix = "";
+        if (isalpha(c))
+            postfix += c;
 
-        for (char c : infix)
-        {
-            if (isalpha(c))             
-                postfix += c;
+        else if (c == '(')
+            s.push(c);
 
-            else if (c == '(')          
-                s.push(c);
-
-        else if (c == ')')          
+        else if (c == ')')
         {
             while (!s.empty() && s.top() != '(')
             {
                 postfix += s.top();
                 s.pop();
             }
-            s.pop();                
+            s.pop();
         }
 
-        else                        
+        else
         {
-            while (!s.empty() && 
-                   (s.top() != '(') &&
-                   ((c=='+'||c=='-') || (c=='*'||c=='/') && (s.top()=='*'||s.top()=='/'))))
+            while (!s.empty() && s.top() != '(')
             {
                 postfix += s.top();
                 s.pop();
@@ -91,7 +94,8 @@ public:
 
     return postfix;
 }
-    / Function to evaluate a numeric postfix expression
+
+// Function to evaluate postfix expression
 int evaluatePostfix(string exp)
 {
     stack<int> s;
@@ -99,7 +103,7 @@ int evaluatePostfix(string exp)
     for (char c : exp)
     {
         if (isdigit(c))
-            s.push(c - '0');       
+            s.push(c - '0');
 
         else
         {
@@ -118,7 +122,6 @@ int evaluatePostfix(string exp)
 
     return s.top();
 }
-};
 
 int main()
 {
@@ -130,13 +133,12 @@ int main()
 
     s.pop();
     s.pop();
-    
+
     string infixExp = "(A+B)*(C-D)+E";
     cout << "Postfix: " << infixToPostfix(infixExp) << endl;
 
-    string postfixExp = "523*+9-"; 
+    string postfixExp = "523*+9-";
     cout << "Result: " << evaluatePostfix(postfixExp) << endl;
-    
-    return 0;
 
+    return 0;
 }
